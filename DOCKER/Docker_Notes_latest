@@ -1,0 +1,376 @@
+# 🐳 Docker – Complete Interview Notes (With Command Explanations)
+
+---
+
+## 1. What is Docker?
+
+Docker is a containerization platform used to build, ship, and run applications in isolated environments called containers.
+
+* Lightweight
+* Fast
+* Shares host OS kernel
+
+---
+
+## 2. Physical vs VM vs Docker
+
+| Feature  | Physical | VM             | Docker        |
+| -------- | -------- | -------------- | ------------- |
+| OS       | Separate | Full OS per VM | Shared kernel |
+| Speed    | Slow     | Medium         | Fast          |
+| Resource | High     | High           | Low           |
+| Boot     | Slow     | Slow           | Very fast     |
+
+---
+
+## 3. Why Docker?
+
+* Consistency (Dev = Prod)
+* Fast deployment
+* Lightweight
+* Easy scaling
+
+---
+
+## 4. Docker Architecture
+
+* Docker Engine → Core runtime
+* Docker Daemon → Runs containers
+* Docker CLI → User interface
+* Docker Hub → Stores images
+
+---
+
+## 5. Key Concepts
+
+**Image**: Blueprint/template used to create containers
+
+**Container**: Running instance of an image
+
+**Dockerfile**: Script containing instructions to build an image
+
+---
+
+## 6. Basic Commands
+
+### Images
+
+```
+docker images
+```
+
+👉 Lists all images stored locally
+
+```
+docker pull ubuntu
+```
+
+👉 Downloads image from Docker Hub
+
+```
+docker rmi <image_id>
+```
+
+👉 Deletes an image
+
+---
+
+### Containers
+
+```
+docker run -it ubuntu bash
+```
+
+👉 Creates and starts a container interactively
+
+* -i → interactive input
+* -t → terminal
+* bash → shell inside container
+
+```
+docker ps
+```
+
+👉 Shows running containers
+
+```
+docker ps -a
+```
+
+👉 Shows all containers (running + stopped)
+
+```
+docker stop <id>
+```
+
+👉 Gracefully stops a container
+
+```
+docker rm <id>
+```
+
+👉 Deletes a stopped container
+
+---
+
+## 7. Container Lifecycle
+
+create → run → stop → remove
+
+---
+
+## 8. Important Commands
+
+```
+docker exec -it <id> bash
+```
+
+👉 Opens terminal inside running container (preferred over SSH)
+
+```
+docker inspect <id>
+```
+
+👉 Shows detailed information (IP, config, etc.)
+
+```
+docker top <id>
+```
+
+👉 Shows running processes inside container
+
+---
+
+## 9. Stop vs Kill
+
+* docker stop → Graceful shutdown (SIGTERM)
+* docker kill → Immediate stop (SIGKILL)
+
+---
+
+## 10. Networking
+
+```
+docker network ls
+```
+
+👉 Lists all networks
+
+Types:
+
+* bridge (default)
+* host
+* none
+
+---
+
+## 11. Port Mapping
+
+```
+docker run -p 8080:80 nginx
+```
+
+👉 Maps port 80 (container) to 8080 (host)
+👉 Access via browser: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## 12. Volumes
+
+```
+docker volume create myvol
+```
+
+👉 Creates persistent storage
+
+```
+docker run -v myvol:/data ubuntu
+```
+
+👉 Mounts volume inside container
+
+---
+
+## 13. Copy Files
+
+```
+docker cp file.txt <id>:/path
+```
+
+👉 Copies file from host → container
+
+```
+docker cp <id>:/path/file.txt .
+```
+
+👉 Copies file from container → host
+
+---
+
+## 14. SSH + SCP (Learning Only)
+
+### Setup SSH
+
+```
+docker run -dit ubuntu
+apt update
+apt install openssh-server -y
+passwd root
+service ssh start
+```
+
+👉 Installs and starts SSH server
+
+### Connect
+
+```
+ssh root@<container-ip>
+```
+
+👉 Login to container
+
+### SCP
+
+```
+scp file.txt root@ip:/root/
+```
+
+👉 Copy file to container
+
+```
+scp root@ip:/root/file.txt .
+```
+
+👉 Copy file from container
+
+⚠️ Not recommended. Use docker exec or docker cp.
+
+---
+
+## 15. Create Image
+
+### docker commit
+
+```
+docker commit <id> my-image:v1
+```
+
+👉 Creates image from running container (snapshot)
+
+### Dockerfile
+
+```
+FROM ubuntu
+RUN apt update
+CMD ["bash"]
+```
+
+👉 Defines steps to build image
+
+### Build
+
+```
+docker build -t my-image:v1 .
+```
+
+👉 Builds image using Dockerfile
+
+---
+
+## 16. Push to Docker Hub
+
+```
+docker login
+```
+
+👉 Login to Docker Hub
+
+```
+docker tag my-image username/my-image
+```
+
+👉 Tags image with Docker Hub username
+
+```
+docker push username/my-image
+```
+
+👉 Uploads image to Docker Hub
+
+---
+
+## 17. Pull Image
+
+```
+docker pull username/my-image
+```
+
+👉 Downloads image from Docker Hub
+
+---
+
+## 18. Cleanup
+
+```
+docker system prune
+```
+
+👉 Removes unused data (containers, networks, images)
+
+```
+docker image prune
+```
+
+👉 Removes unused images
+
+---
+
+## 19. Run without sudo
+
+```
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+👉 Allows running docker without sudo
+
+---
+
+## 20. Image Layers
+
+```
+docker history <image_id>
+```
+
+👉 Shows image layers
+
+---
+
+## Interview Q&A
+
+**Image vs Container**
+
+* Image = template
+* Container = running instance
+
+**build vs commit**
+
+* build = recommended (reproducible)
+* commit = quick snapshot
+
+**Why containers fast?**
+
+* Share OS kernel
+
+**Why no SSH?**
+
+* Use docker exec
+
+---
+
+## Summary
+
+* Docker = containerization tool
+* Fast & lightweight
+* Dockerfile is best practice
+* Use volumes & networking in real projects
