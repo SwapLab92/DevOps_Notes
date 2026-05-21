@@ -1,0 +1,82 @@
+When Condition
+===========================================================
+---
+- name: Condition Example
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install apache on Ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: ansible_os_family == "Debian"
+===================================================================
+Loop
+
+---
+- name: Loop Example
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Create users
+      user:
+        name: "{{ item }}"
+        state: present
+
+      loop:
+        - dev1
+        - dev2
+        - test1
+=========================================================================
+Package install Loop
+
+---
+- name: Install packages
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+
+      loop:
+        - git
+        - wget
+        - tree
+
+=================================================================
+Handler 
+---
+- name: Handler Example
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Copy index file
+      copy:
+        content: "Welcome from Ansible"
+        dest: /var/www/html/index.html
+
+      notify:
+        - Restart nginx
+
+  handlers:
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+========================================================================
