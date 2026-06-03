@@ -1,0 +1,7 @@
+curl -sfL https://get.k3s.io | \
+INSTALL_K3S_EXEC="server \
+--node-ip=172.20.10.3 \
+--flannel-iface=enp0s3 \
+--disable traefik \
+--disable servicelb" \
+sh -
