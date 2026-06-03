@@ -5,6 +5,23 @@ In real companies you may see kubeadm clusters, managed Kubernetes like Amazon E
 But the Kubernetes objects and manifests remain the same."
 
 It uses the same Kubernetes APIs.
+
++----------------------------------+
+|            myvm                  |
+|----------------------------------|
+| Control Plane                    |
+|  - API Server                    |
+|  - Scheduler                     |
+|  - Controller Manager            |
+|                                  |
+| Worker Node                      |
+|  - Kubelet                       |
+|  - Container Runtime(containerd) |
+|                                  |
+| Pods                             |
+|  - nginx                         |
+|  - coredns                       |
++----------------------------------+
 =======================================================================
 run hostname -i first and then put the ip in node ip in the below command.
 
