@@ -1,3 +1,13 @@
+It's a CNCF-certified Kubernetes distribution developed by Rancher Labs and now part of Cloud Native Computing Foundation.
+
+"What we're using is K3s, a lightweight Kubernetes distribution. 
+In real companies you may see kubeadm clusters, managed Kubernetes like Amazon EKS, Azure Kubernetes Service, or Google Kubernetes Engine. 
+But the Kubernetes objects and manifests remain the same."
+
+It uses the same Kubernetes APIs.
+=======================================================================
+run hostname -i first and then put the ip in node ip in the below command.
+
 curl -sfL https://get.k3s.io | \
 INSTALL_K3S_EXEC="server \
 --node-ip=172.20.10.3 \
@@ -5,3 +15,72 @@ INSTALL_K3S_EXEC="server \
 --disable traefik \
 --disable servicelb" \
 sh -
+
+check "which k3s" or "sudo systemctl status k3s"
+
+sudo systemctl status k3s
+
+kubectl get nodes -o wide
+========================================================================
+->kubectl get nodes
+
+Expected:
+
+NAME     STATUS
+server   Ready
+
+This is our Node.
+
+Cluster Info:
+
+kubectl cluster-info
+
+System Pods:
+
+kubectl get pods -A
+=============================================================================
+Create Pod directly.
+
+kubectl run nginx --image=nginx
+
+Check:
+
+kubectl get pods
+
+Output:
+
+nginx   Running
+
+Describe:
+
+kubectl describe pod nginx
+
+Show:
+
+Image
+IP
+Events
+
+Logs:
+
+kubectl logs nginx
+
+Delete:
+
+kubectl delete pod nginx
+
+Create Again:
+
+kubectl run apache --image=httpd
+
+Check:
+
+kubectl get pods
+
+Show Container Inside Pod
+sudo kubectl get pod nginx -o wide
+
+sudo kubectl logs nginx
+
+Exec Inside Pod
+sudo kubectl exec -it nginx -- bash
