@@ -1,0 +1,390 @@
+Kubernetes with K3s
+What is K3s?
+K3s is a lightweight Kubernetes distribution developed by Rancher Labs and certified by CNCF (Cloud Native Computing Foundation).
+It contains all core Kubernetes features but consumes less CPU and memory compared to a standard Kubernetes installation.
+
+Why K3s?
+
+In production environments, companies use:
+
+kubeadm clusters
+Amazon EKS
+Azure AKS
+Google GKE
+OpenShift
+
+For learning purposes, K3s is preferred because:
+
+Easy installation
+Low resource consumption
+Same Kubernetes APIs
+Same kubectl commands
+Same YAML manifests
+
+Important: Everything you learn in K3s works exactly the same in EKS, AKS, GKE, and kubeadm clusters
+=======================================================================================================================================
+In our lab, both Control Plane and Worker Node run on the same VM.
+
++----------------------------------+
+|            myvm                  |
+|----------------------------------|
+| Control Plane                    |
+|  - API Server                    |
+|  - Scheduler                     |
+|  - Controller Manager            |
+|                                  |
+| Worker Node                      |
+|  - Kubelet                       |
+|  - Container Runtime(containerd) |
+|                                  |
+| Pods                             |
+|  - nginx                         |
+|  - coredns                       |
++----------------------------------+
+=========================================================================================================================================
+
+Components Explanation
+API Server
+
+The API Server is the brain of Kubernetes.
+
+Whenever we run:
+kubectl get pods, kubectl create deployment and kubectl delete pod
+
+kubectl talks to the API Server.
+
+The API Server receives all requests and coordinates cluster operations.
+---------------------------------------------------------------------------------------
+Scheduler
+
+The Scheduler decides:
+
+"On which node should this Pod run?"
+
+If the cluster contains multiple worker nodes, Scheduler selects the best node based on available resources.
+------------------------------------------------------------------------------------------
+Controller Manager
+
+The Controller Manager continuously checks whether the cluster state matches the desired state.
+
+Example:
+
+Desired Pods = 3
+
+Running Pods = 2
+
+Controller Manager automatically creates one more Pod.
+---------------------------------------------------------------------------------------------
+Kubelet
+
+Kubelet runs on every worker node.
+
+Responsibilities:
+
+Communicates with API Server
+Creates Pods
+Monitors Pod health
+Restarts failed containers
+Container Runtime
+
+Container Runtime actually runs containers.
+
+K3s uses:
+
+containerd
+
+Responsibilities:
+
+Pull images
+Create containers
+Start containers
+Stop containers
+=========================================================================================================
+Installing K3s
+
+First check your IP address:
+
+->hostname -i
+
+Use that IP in the installation command.
+
+->curl -sfL https://get.k3s.io | \
+INSTALL_K3S_EXEC="server \
+--node-ip=172.20.10.3 \
+--flannel-iface=enp0s3 \
+--disable traefik \
+--disable servicelb" \
+sh -
+
+Verify Installation
+
+Check K3s service:
+
+->which k3s
+->sudo systemctl status k3s
+
+Check node:
+
+->kubectl get nodes -o wide
+
+Expected:
+
+NAME     STATUS
+server   Ready
+Cluster Information
+kubectl cluster-info
+View System Pods
+kubectl get pods -A
+
+Common Pods:
+
+coredns
+metrics-server
+local-path-provisioner
+Creating a Pod
+
+Create nginx Pod:
+
+->kubectl run nginx --image=nginx
+
+Check:
+
+->kubectl get pods
+
+Expected:
+
+nginx   Running
+---------------------------------------------------------------------------------------------
+
+This is the complete lifecycle of Pod creation.
+kubectl run nginx
+        │
+        ▼
+API Server
+        │
+        ▼
+Scheduler
+        │
+        ▼
+Node Selected
+        │
+        ▼
+Kubelet
+        │
+        ▼
+containerd
+        │
+        ▼
+Pull nginx Image
+        │
+        ▼
+Create Container
+        │
+        ▼
+Pod Running
+=================================================================================================================
+Pod Inspection
+
+Describe Pod:
+
+->kubectl describe pod nginx
+
+Useful Information:
+
+Pod IP
+Events
+Container Status
+Node Name
+Image Name
+View Logs
+kubectl logs nginx
+
+Used for troubleshooting applications.
+
+Execute Commands Inside Pod
+-> kubectl exec -it nginx -- bash
+
+This opens a shell inside the container.
+
+Useful for:
+
+Checking files
+Verifying application
+Troubleshooting issues
+
+Delete Pod
+->kubectl delete pod nginx
+======================================================================================
+
+Pod vs Container
+
+Many beginners get confused here.
+
+Pod
+ └── Container
+
+A Pod is the smallest deployable unit in Kubernetes.
+
+A Pod can contain:
+
+One Container
+Multiple Containers
+
+Example:
+
+Pod
+├── nginx container
+└── log-sidecar container
+
+============================================================================================
+Creating Custom Application Pod
+
+Suppose you pushed your custom image to Docker Hub:
+
+swaphub92/netflix-app
+
+Create Pod:
+
+->kubectl run myapp --image=swaphub92/netflix-app
+
+Check:
+
+->kubectl get pods
+
+Describe:
+
+->kubectl describe pod myapp
+Why Can't We Access the Application?
+
+The question now is 
+
+"My Pod is running. Why can't I open it in browser?"
+
+Because Pods are accessible only inside the Kubernetes network.
+
+Example:
+
+Internet
+   ❌
+   │
+Pod IP
+10.42.0.5
+
+Pod IP is internal.
+
+How Do We Access the Application?
+
+We create a Service.
+
+Think of a Service as a door to reach the Pod.
+
+Laptop Browser
+      │
+      ▼
+   Service
+      │
+      ▼
+     Pod
+      │
+      ▼
+ Application
+
+Without a Service, users outside Kubernetes cannot reach the Pod.
+
+Expose the Pod
+
+Create a Service using:
+
+kubectl expose pod myapp \
+--type=NodePort \
+--port=8080 \
+--target-port=8080
+
+This command creates a Service for the Pod.
+
+Understanding the Command
+target-port-->The port on which the application is running inside the container.
+
+For example:
+
+Tomcat → 8080
+
+So:
+--target-port=8080
+
+means send traffic to port 8080 inside the container.
+
+port
+
+The Service port.
+
+Service → 8080
+        ↓
+Container → 8080
+--port=8080
+type=NodePort
+
+This is the most important part.
+
+NodePort opens a port on the Kubernetes Node (VM).
+
+Laptop Browser
+       │
+       ▼
+Node IP : 192.168.1.10
+Port    : 32193
+       │
+       ▼
+Service
+       │
+       ▼
+Pod
+
+Now users can access the application from outside Kubernetes.
+
+Check Service
+->kubectl get svc
+
+Example output:
+
+NAME    TYPE       PORT(S)
+myapp   NodePort   8080:32193
+
+Meaning:
+
+Service Port = 8080
+NodePort     = 32193
+
+Kubernetes automatically selected port 32193.
+
+Access Application in Browser
+
+First find VM IP:
+
+hostname -i
+
+Example:
+
+192.168.1.10
+
+Then open:
+
+http://192.168.1.10:32193
+
+Flow:
+
+Browser
+   │
+   ▼
+VM IP:32193
+   │
+   ▼
+Service
+   │
+   ▼
+Pod
+   │
+   ▼
+Tomcat Application
+
+Now the application running inside the Pod becomes accessible in your laptop browser.
