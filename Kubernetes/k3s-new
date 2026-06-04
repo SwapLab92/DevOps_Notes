@@ -388,3 +388,35 @@ Pod
 Tomcat Application
 
 Now the application running inside the Pod becomes accessible in your laptop browser.
+-----------------------------------------------------------------------------------------------------------------------------
+What is a Service in Kubernetes?
+A Service is a Kubernetes object used to access applications running inside Pods.
+Pods get their own IP addresses, but Pod IPs are internal to the cluster and cannot be directly accessed from a laptop or browser.
+Pod IPs are not permanent. If a Pod is deleted or restarted, Kubernetes may create a new Pod with a different IP address.
+A Service provides a stable network endpoint so users do not need to worry about changing Pod IP addresses.
+When a user sends a request, the Service forwards the traffic to the correct Pod.
+
+We exposed our application using the command:
+
+kubectl expose pod myapp --type=NodePort --port=8080 --target-port=8080
+
+This command created a Service for the Pod.
+
+In our lab, the traffic flow is:
+
+Browser
+   ↓
+NodeIP:NodePort
+   ↓
+ Service
+   ↓
+   Pod
+   ↓
+Application
+Easy Example
+
+Pod = Employee
+Service = Reception Desk
+User = Visitor
+
+The visitor does not directly contact the employee. The reception desk (Service) receives the visitor and directs them to the correct employee (Pod). Similarly, a Service receives requests and forwards them to the correct Pod.
