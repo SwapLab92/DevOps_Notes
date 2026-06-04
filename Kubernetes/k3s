@@ -119,3 +119,26 @@ sudo kubectl logs nginx
 
 Exec Inside Pod
 sudo kubectl exec -it nginx -- bash
+======================================================================================================
+kubectl run creates a simple Pod with one container. For multi-container Pods, we must define multiple containers in a Pod YAML manifest and apply it using kubectl apply -f.
+
+
+=======================================================================================================
+You can create image from custome images which you pushed to docker hu.
+
+sudo kubectl run myapp --image=swaphub92/netflix-app
+
+sudo kubectl get pods
+
+sudo kubectl describr pod myapp
+
+Now since this netflix-app image already had the war file and tomcat in it this means your container is inside pod.
+To access the app inside pod first you need to expose the 
+
+sudo kubectl expose pod myapp --type=NodePort --port=8080 --target-port=8080
+kubectl get pod -o wide
+
+kubectl get svc
+
+
+=================================================================================================
