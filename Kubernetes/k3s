@@ -60,6 +60,24 @@ Create Pod directly.
 
 kubectl run nginx --image=nginx
 
+kubectl
+↓
+API Server
+↓
+Scheduler
+↓
+Node Selected
+↓
+Kubelet
+↓
+containerd
+↓
+Pull nginx Image
+↓
+Create Container
+↓
+Pod Running
+
 Check:
 
 kubectl get pods
