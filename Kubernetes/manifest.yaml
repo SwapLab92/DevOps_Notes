@@ -8,3 +8,21 @@ spec:
   containers:
   - name: nginx-container
     image: nginx
+=================================================================================
+Multi-Container Yaml 
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod1
+spec:
+  containers:
+    - name: container1
+      image: nginx
+    - name: container2
+      image: nginx
+
+How to run yaml file
+
+>>> sudo kubectl apply -f myfile.yaml
