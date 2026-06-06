@@ -1,0 +1,52 @@
+Git Practice Questions (Hands-On Tasks)
+Create a new repository named student-project and initialize it with Git.
+Create a file named index.html and add some sample content to it.
+Check the status of the repository and identify which files are untracked.
+Add index.html to the Staging Area.
+Commit the staged file with the message Initial Commit.
+Modify index.html by adding a heading and some text.
+Check the repository status again and identify which area contains the changes.
+Stage the modified file and then unstage it without losing the changes.
+Stage the file again and commit it with the message Updated Home Page.
+Display the complete commit history of the repository.
+Display the commit history in a one-line format.
+Display only the last 2 commits.
+View the detailed information of the latest commit.
+Create a new branch named login-feature.
+Switch to the login-feature branch.
+Create a file named login.html and add some content to it.
+Stage and commit login.html with the message Added Login Page.
+Display all local branches and identify the active branch.
+Switch back to the main branch.
+Verify whether login.html exists on the main branch.
+Merge the login-feature branch into main.
+Delete the login-feature branch after the merge.
+Create another branch named payment-feature.
+Create a file named payment.html and commit it.
+Push the payment-feature branch to GitHub for the first time.
+Set upstream tracking while pushing the branch to GitHub.
+Display all remote branches available in the repository.
+Create three commits in a branch and then remove the latest commit while keeping changes in the Staging Area.
+Remove the latest commit while keeping changes in the Working Directory.
+Remove the latest commit and all associated changes completely.
+Create a branch named bug-fix and make a commit in it.
+Push the bug-fix branch to GitHub.
+Merge the bug-fix branch into main and delete it.
+Display the commit history using graph view and explain the branch structure.
+Identify the command used to unstage a file from the Staging Area.
+Identify the command used to compare two commits.
+Identify the command used to find who modified a specific line in a file.
+Explain the difference between git reset --soft, git reset --mixed, and git reset --hard.
+A developer accidentally committed incorrect code. Remove the commit but keep the changes for further modification.
+A production issue occurred after deployment. Identify the recent commits and inspect the exact code changes introduced by the latest commit.
+Draw and explain the Git Architecture showing:
+Working Directory
+Staging Area
+Local Repository
+Remote Repository
+Explain the difference between Centralized Version Control System (CVCS) and Distributed Version Control System (DVCS).
+Explain why Git is considered a Distributed Version Control System.
+Explain the complete flow of:
+Working Directory → Staging Area → Local Repository → Remote Repository
+Perform the complete workflow:
+Initialize Repository → Create File → Add → Commit → Create Branch → Modify File → Commit → Push Branch → Merge Branch → Delete Branch → View Commit Logs.
