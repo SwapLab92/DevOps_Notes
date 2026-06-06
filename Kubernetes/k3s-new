@@ -108,6 +108,8 @@ First check your IP address:
 
 Use that IP in the installation command.
 
+curl -sfL https://get.k3s.io | sh -.
+--------------------------------------------------------------
 ->curl -sfL https://get.k3s.io | \
 INSTALL_K3S_EXEC="server \
 --node-ip=172.20.10.3 \
