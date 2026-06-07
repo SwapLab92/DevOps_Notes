@@ -1,0 +1,334 @@
+What is Kubernetes?
+
+"Kubernetes is an open-source container orchestration platform used to automate deployment, scaling, load balancing, self-healing, 
+ and management of containerized applications."
+
+What is a Node?
+
+"A Node is a physical or virtual machine in a Kubernetes cluster where Pods are scheduled and executed."
+
+What is a Pod?
+
+"A Pod is the smallest deployable unit in Kubernetes that encapsulates one or more containers sharing the same network and storage."
+
+From where does Kubernetes pull images?
+"Kubernetes itself does not pull images. It instructs the Container Runtime (such as containerd) to pull images from a container registry. 
+By default, if only an image name like nginx is specified, the image is pulled from Docker Hub (docker.io)."
+
+What is Kubernetes Architecture?
+
+Imagine you own a company with hundreds of employees.
+
+You need:
+
+A manager to receive requests
+Someone to assign work
+Someone to monitor employees
+A database to store information
+Workers to do the actual work
+
+Kubernetes works exactly the same way.
+
+                 Kubernetes Cluster
+
+                  Control Plane
+     +--------------------------------------+
+     | API Server                           |
+     | Scheduler                            |
+     | Controller Manager                   |
+     | ETCD                                 |
+     +--------------------------------------+
+
+                        |
+
+      -----------------------------------------
+      |                 |                    |
+      |                 |                    |
+    Node 1           Node 2              Node 3
+
+ +-----------+   +-----------+      +-----------+
+ |   Pod A   |   |   Pod C   |      |   Pod E   |
+ |   Pod B   |   |   Pod D   |      |   Pod F   |
+ +-----------+   +-----------+      +-----------+
+
+    Kubelet        Kubelet           Kubelet
+   Containerd     Containerd        Containerd
+
+================================================================================================================
+
+What is a Cluster?
+
+A Cluster is the complete Kubernetes environment.
+
+It contains:
+
+Control Plane
++
+Worker Nodes
+
+Think of it as:
+
+Company
+=
+Management Team
++
+Employees
+Control Plane (The Brain)
+
+The Control Plane makes all decisions.
+
+It does not run applications.
+
+It manages applications.
+
+Think of it as:
+---------------------------------------------------------------------------
+CEO + Managers
+1. API Server (The Reception Desk)
+
+The API Server is the entry point to Kubernetes.
+
+Whenever you run:
+
+kubectl get pods
+
+or
+
+kubectl create deployment
+
+the request goes to the API Server first.
+
+Real-Life Example
+
+Imagine entering a company.
+
+You first talk to Reception.
+
+You
+ ↓
+Reception
+ ↓
+Correct Department
+
+Similarly:
+
+kubectl
+ ↓
+API Server
+ ↓
+Kubernetes
+---------------------------------------------------------------
+2. ETCD (The Database)
+
+ETCD stores all cluster information.
+
+It stores:
+
+Pods
+Deployments
+Services
+Secrets
+ConfigMaps
+Node information
+Real-Life Example
+
+Think of ETCD as:
+
+Company Database
+
+Everything is stored there.
+
+If ETCD is lost:
+
+Cluster information is lost
+-------------------------------------------------------------------
+3. Scheduler (The Placement Team)
+
+The Scheduler decides:
+
+Which Node should run the Pod?
+
+Example:
+
+You create a Pod.
+
+Pod Created
+      ↓
+Scheduler
+      ↓
+Select Node
+Real-Life Example
+
+A manager assigning employees to projects.
+
+New Task
+    ↓
+Manager
+    ↓
+Employee Selected
+----------------------------------------------------------------
+4. Controller Manager (The Monitoring Team)
+
+The Controller Manager constantly checks:
+
+Desired State
+vs
+Actual State
+
+Example:
+
+You want:
+
+3 Pods
+
+But only:
+
+2 Pods Running
+
+Controller Manager notices:
+
+Desired = 3
+Current = 2
+
+and creates another Pod.
+
+Real-Life Example
+
+A supervisor checking attendance.
+
+Need 10 Employees
+Only 9 Present
+↓
+Call One More Employee
+Worker Node (The Actual Worker)
+
+Nodes are machines where applications run.
+
+A Node can be:
+
+Virtual Machine
+Physical Server
+Cloud Instance
+
+Example:
+
+EC2 Instance
+Oracle VM
+VirtualBox VM
+Components Inside a Node
+
+Every Node contains:
+
+Kubelet
+Container Runtime
+Pods
+---------------------------------------------------------------------
+5. Kubelet (The Local Employee)
+
+Kubelet runs on every Node.
+
+Responsibilities:
+
+Talks to API Server
+Creates Pods
+Monitors Pod health
+Real-Life Example
+
+Think of Kubelet as:
+
+Local Team Lead
+
+The manager gives instructions.
+
+The team lead executes them.
+=--------------------------------------------------------------
+6. Container Runtime (The Worker)
+
+Container Runtime actually runs containers.
+
+Examples:
+
+containerd
+CRI-O
+
+In K3s:
+
+containerd
+
+is used by default.
+
+Real-Life Example
+
+Kubelet says:
+
+Run nginx
+
+Container Runtime says:
+
+Okay, I'll start it.
+--------------------------------------------------------------------
+7. Pod (Smallest Deployable Unit)
+
+A Pod contains one or more containers.
+
+Example:
+
+Pod
+ └── nginx container
+
+or
+
+Pod
+ ├── frontend container
+ └── log collector container
+Complete Flow of a Pod Creation
+
+When you run:
+
+kubectl run nginx --image=nginx
+
+This happens:
+
+kubectl
+   ↓
+API Server
+   ↓
+ETCD stores request
+   ↓
+Scheduler selects Node
+   ↓
+Kubelet receives instruction
+   ↓
+containerd pulls image
+   ↓
+Container starts
+   ↓
+Pod Running
+
+This is the most important flow in Kubernetes architecture.
+
+One-Line Summary for Students
+Component	Easy Meaning
+API Server	Entry Gate
+ETCD	Database
+Scheduler	Placement Team
+Controller Manager	Monitoring Team
+Node	Worker Machine
+Kubelet	Node Agent
+Container Runtime	Runs Containers
+Pod	Smallest Deployable Unit
+Easy Memory Trick
+API Server      → Receives Requests
+ETCD            → Stores Data
+Scheduler       → Selects Node
+Controller      → Maintains Desired State
+Kubelet         → Executes Instructions
+Containerd      → Runs Containers
+Pod             → Runs Applications
+========================================================================================
+
+What is Deployment?
+Simple Definition
+
+Deployment is a Kubernetes object used to manage Pods. 
+It provides self-healing, scaling, rolling updates, and rollback functionality by maintaining the desired number of Pod replicas through a ReplicaSet.
