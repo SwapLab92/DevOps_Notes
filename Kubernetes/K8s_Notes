@@ -332,3 +332,11 @@ Simple Definition
 
 Deployment is a Kubernetes object used to manage Pods. 
 It provides self-healing, scaling, rolling updates, and rollback functionality by maintaining the desired number of Pod replicas through a ReplicaSet.
+
+Deployment
+     ↓
+uses
+ReplicaSet
+     ↓
+creates
+Pods
