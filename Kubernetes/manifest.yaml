@@ -53,3 +53,45 @@ spec:
         image: nginx:1.24
 
 =========================================================================================================
+>>>>>>>>>>>>>>>>>>>>>> AUTOSCALING YAML<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  labels:
+    app: cpu-demo1
+  name: cpu-demo1
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: cpu-demo1
+
+  template:
+    metadata:
+      labels:
+        app: cpu-demo1
+
+    spec:
+      containers:
+        - image: busybox
+          name: busybox
+
+          command:
+            - /bin/sh
+            - -c
+
+          args:
+            - while true; do :; done
+
+          resources:
+            requests:
+              cpu: 100m
+
+            limits:
+              cpu: 200m
+
+==========================================================================================
