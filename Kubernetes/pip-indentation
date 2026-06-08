@@ -1,0 +1,15 @@
+
+$sudo apt update
+$sudo apt install pip
+$ sudo pip install ruamel.yaml
+
+from ruamel.yaml import YAML
+import sys
+
+yaml = YAML()
+yaml.indent(mapping=2, sequence=4, offset=2)  # 2 spaces for mappings
+with open("manifest.yaml") as f:
+    data = yaml.load(f)
+
+with open("manifest_fixed.yaml", "w") as f:
+    yaml.dump(data, f)
