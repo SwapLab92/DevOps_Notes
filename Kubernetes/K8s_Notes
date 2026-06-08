@@ -333,15 +333,23 @@ Simple Definition
 Deployment is a Kubernetes object used to manage Pods. 
 It provides self-healing, scaling, rolling updates, and rollback functionality by maintaining the desired number of Pod replicas through a ReplicaSet.
 
+What is Self-Healing?
 
+Self-healing means:
+
+If a Pod crashes, gets deleted, or becomes unhealthy, Kubernetes automatically creates a new Pod to replace it.
+
+$kubectl create deployment nginx --image=nginx --replicas=3
 $kubectl get deploy
-
 $kubectl get rs
-
 $kubectl get pods
-
 $kubectl get pods -w
+--------------------------------------------------------------------------------------------
 
+Rolling Update
+
+Rolling Update is a Kubernetes deployment strategy used to update an application without downtime. When a new version is deployed, Kubernetes creates a new ReplicaSet and gradually launches new Pods while terminating old Pods one by one. This ensures the application remains available throughout the update process. If the new version has issues, Kubernetes can easily roll back to the previous version. 
+Rolling updates are managed by Deployments and provide zero or minimal downtime during application upgrades.
 $kubectl set image deployment/nginx-demo nginx=nginx:1.25
 
 $kubectl set image deployment/nginx-demo nginx=nginx:1.25
@@ -413,3 +421,40 @@ automatically.
 
 $kubectl autoscale deployment cpu-demo --cpu-percent=50 --min=1 --max=5
 $kubectl get hpa
+==================================================================================================
+
+What is a Service?
+
+A Service is a Kubernetes object that provides a stable network endpoint and load balancing for a group of Pods.
+
+Why do we need a Service?
+Pod IPs change.
+Service provides stable access.
+Service performs load balancing.
+Service enables service discovery.
+How does a Service find Pods?
+
+Using labels and selectors.
+
+Difference Between Deployment and Service?
+Deployment
+    ↓
+Creates & Manages Pods
+
+Service
+    ↓
+Provides Network Access to Pods
+
+View Services:
+$kubectl get svc
+
+Detailed Information:
+$kubectl describe svc myapp-service
+
+Delete Service:
+$kubectl delete svc myapp-service
+
+View Endpoints:
+$kubectl get endpoints
+
+$kubectl expose deployment myapp --type=NodePort --port=80 --target-port=80
