@@ -333,10 +333,33 @@ Simple Definition
 Deployment is a Kubernetes object used to manage Pods. 
 It provides self-healing, scaling, rolling updates, and rollback functionality by maintaining the desired number of Pod replicas through a ReplicaSet.
 
-Deployment
-     ↓
-uses
-ReplicaSet
-     ↓
-creates
-Pods
+
+$kubectl get deploy
+
+$kubectl get rs
+
+$kubectl get pods
+
+$kubectl get pods -w
+
+$kubectl set image deployment/nginx-demo nginx=nginx:1.25
+
+$kubectl set image deployment/nginx-demo nginx=nginx:1.25
+
+$kubectl rollout status deployment/nginx-demo
+
+$kubectl rollout history deployment/nginx-demo
+
+$kubectl rollout undo deployment/nginx-demo
+
+Step 1
+Create Deployment
+
+Step 2:
+Deployment creates ReplicaSet
+
+Step 3:
+ReplicaSet creates Pods
+
+Step 4:
+Pods start Containers
