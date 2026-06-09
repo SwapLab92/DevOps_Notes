@@ -458,3 +458,78 @@ View Endpoints:
 $kubectl get endpoints
 
 $kubectl expose deployment myapp --type=NodePort --port=80 --target-port=80
+================================================================================================================
+
+What is ConfigMap?
+
+ConfigMap stores non-sensitive configuration outside the container. It can be injected into Pods as environment variables or mounted as files.
+A common use case is providing application configuration files such as index.html, properties files, or application settings without rebuilding the image.
+
+ConfigMap Demo - Replace Nginx index.html
+Step 1: Create a Custom Web Page
+
+Create an index.html file:
+
+vi index.html
+
+Add content:
+
+<h1>Welcome to DevOps Class</h1>
+<h2>ConfigMap Demo</h2>
+Step 2: Create ConfigMap
+
+Create a ConfigMap from the file:
+
+kubectl create configmap nginx-index --from-file=index.html
+
+Verify:
+
+kubectl describe configmap nginx-index
+Step 3: Create Nginx Pod
+
+Create a Pod with:
+
+Label app=nginx
+ConfigMap mounted as index.html
+kubectl apply -f pod.yaml
+
+Verify:
+
+kubectl get pods --show-labels
+
+Expected:
+
+nginx-configmap   Running   app=nginx
+Step 4: Verify ConfigMap Inside Pod
+
+Login into Pod:
+
+kubectl exec -it nginx-configmap -- bash
+
+Check file:
+
+cat /usr/share/nginx/html/index.html
+Step 5: Expose Pod
+
+Create a NodePort Service:
+
+kubectl expose pod nginx-configmap --type=NodePort --port=80
+
+Verify:
+
+kubectl get svc
+Step 6: Find NodePort
+kubectl get svc
+
+Example:
+
+nginx-configmap   NodePort   80:31567/TCP
+Step 7: Access Application
+
+Get Node IP:
+
+kubectl get nodes -o wide
+
+Open browser:
+
+http://<NODE-IP>:31567
