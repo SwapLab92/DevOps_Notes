@@ -113,3 +113,33 @@ spec:
     targetPort: 80
     nodePort: 32008
 =============================================================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myconfig-deploy
+  namespace: dev
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: mykube
+        image: nginx
+
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-config
+
