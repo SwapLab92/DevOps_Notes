@@ -143,3 +143,25 @@ spec:
         configMap:
           name: nginx-config
 
+-----------------------------------------------------------------------------------------------------------
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nginx-secret
+  labels:
+    app: nginx
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+    volumeMounts:
+    - name: secret-volume
+      mountPath: /etc/secret
+
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: app-secret
