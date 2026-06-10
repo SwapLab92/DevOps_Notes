@@ -51,7 +51,8 @@
 
 	local  <Volume-Name>
 
-
+# Create Volume
+$ docker container run -d --name mysql-db -v mysqlvol:/var/lib/mysql mysql
 # Inspect a volume:
 
 	$ docker volume inspect <Volume-Name>  (Note:- This command shows the info about volume, on which location container data will be stored.)
@@ -116,8 +117,8 @@
 	- Basically just two locations pointing two the same files.
 	- See, My working file is in my current directory ie. outside the running container and I want to map or execute this file inside container use bind mount. use below command :
 	  
-		$ docker container run -d --name <container-name> -p 8080:80 -v $(pwd):/usr/share/nginx/html <nginx-image>
-                     Note:- you will see the nginx custom image output
+$docker container run -d --name nginx-web -p 8080:80 -v /home/oracle/website:/usr/share/nginx/html nginx                     
+Note:- you will see the nginx custom image output
 		$ docker container run -d --name <container-name> -p 8080:80 <nginx-image>
 		     Note:- you will see the real nginx default output page., Now open one new terminal and enter into that container using exec command
 		
