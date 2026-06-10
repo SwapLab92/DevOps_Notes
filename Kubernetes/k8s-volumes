@@ -1,0 +1,107 @@
+What are Kubernetes Volumes?
+
+A Kubernetes Volume is a storage mechanism that allows containers inside a Pod to store and access data.
+
+Containers are temporary in nature. If a container crashes or is recreated, data stored inside the container may be lost. Volumes solve this problem by providing storage that exists independently of the container.
+
+Volumes are attached to Pods and can be shared between multiple containers within the same Pod.
+
+Types of Kubernetes Volumes
+1. emptyDir
+
+An emptyDir volume is created when a Pod starts and exists as long as the Pod exists.
+
+It is mainly used for:
+
+Temporary files
+Cache data
+Shared storage between containers in the same Pod
+
+When the Pod is deleted, all data in the emptyDir volume is also deleted.
+
+2. hostPath
+
+A hostPath volume mounts a directory or file from the Kubernetes worker node into a Pod.
+
+It is mainly used for:
+
+Testing and learning
+Accessing host machine files
+Single-node environments
+
+Since the storage resides on a specific node, it is generally not recommended for production workloads.
+
+3. ConfigMap Volume
+
+A ConfigMap volume is used to provide configuration data to applications.
+
+Configuration information such as:
+
+Configuration files
+Application settings
+Environment-specific values
+
+can be mounted into a container as files.
+
+ConfigMaps are used for non-sensitive data.
+
+4. Secret Volume
+
+A Secret volume is used to provide sensitive information to applications.
+
+Examples include:
+
+Passwords
+API keys
+Access tokens
+Certificates
+
+Secrets can be mounted as files inside containers and are intended for confidential data.
+
+5. PersistentVolumeClaim Volume
+
+A PersistentVolumeClaim volume allows a Pod to use persistent storage through a PVC.
+
+Applications do not directly use a PersistentVolume. Instead, they use a PVC, which provides access to the storage.
+
+This is the most common volume type used in production environments.
+
+What is a Persistent Volume (PV)?
+
+A Persistent Volume (PV) is a storage resource available in a Kubernetes cluster.
+
+It represents actual storage that can come from:
+
+Local disk
+NFS storage
+Cloud disks such as AWS EBS, Azure Disk, or Google Persistent Disk
+
+A PV is created and managed by Kubernetes administrators or automatically through storage provisioning.
+
+A PV exists independently of Pods.
+
+What is a Persistent Volume Claim (PVC)?
+
+A Persistent Volume Claim (PVC) is a request for storage made by an application.
+
+Instead of directly accessing a Persistent Volume, an application requests storage through a PVC.
+
+The PVC specifies requirements such as:
+
+Storage size
+Access mode
+
+Kubernetes then finds a suitable PV and binds the PVC to it.
+
+Relationship Between Volume, PV, and PVC
+
+A Pod does not directly use a PV.
+
+The typical flow is:
+
+A PV provides storage.
+A PVC requests storage.
+Kubernetes binds the PVC to a suitable PV.
+The Pod uses the PVC through a PersistentVolumeClaim volume.
+
+This separation allows applications to use storage without needing to know where the actual storage is located.
