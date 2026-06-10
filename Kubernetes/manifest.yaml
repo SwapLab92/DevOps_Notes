@@ -165,3 +165,86 @@ spec:
   - name: secret-volume
     secret:
       secretName: app-secret
+====================================================================================================================
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Persistent Volume<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: v1                  # Core Kubernetes API
+kind: PersistentVolume          # We are creating a PV
+
+metadata:
+  name: nginx-pv                # Name of the PV
+
+spec:
+
+  capacity:
+    storage: 1Gi                # Total storage available
+
+  accessModes:
+  - ReadWriteOnce               # One node can read/write
+
+  persistentVolumeReclaimPolicy: Retain
+                                # Keep data even if PVC is deleted
+
+  hostPath:
+    path: /data/nginx           # Actual storage on host machine
+-----------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Persistent Vloume Claim<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: v1                    # Core Kubernetes API
+kind: PersistentVolumeClaim       # We are creating a PVC
+
+metadata:
+  name: nginx-pvc                 # Name of PVC
+
+spec:
+
+  accessModes:
+  - ReadWriteOnce                 # Must match PV access mode
+
+  resources:
+    requests:
+      storage: 500Mi              # Request 500MB storage
+-------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Deployment with PVC<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: apps/v1                 # Which Kubernetes API handles Deployment
+kind: Deployment                    # Create a Deployment object
+
+metadata:
+  name: nginx-pv-deploy             # Name of the Deployment
+
+spec:
+
+  replicas: 2                       # Number of Pods required
+
+  selector:                         # How Deployment identifies its Pods
+    matchLabels:
+      app: nginx                    # Look for Pods with label app=nginx
+
+  template:                         # Blueprint/template for creating Pods
+
+    metadata:
+      labels:
+        app: nginx                  # Label assigned to Pods
+
+    spec:
+
+      containers:                   # Container definitions start here
+
+      - name: nginx                 # Container name
+        image: nginx                # Docker image to run
+
+        ports:
+        - containerPort: 80         # Application listens on port 80
+
+        volumeMounts:               # Mount storage inside container
+        - name: website-storage     # Volume name (must match below)
+          mountPath: /usr/share/nginx/html
+                                   # Location inside container where storage is attached
+
+      volumes:                      # Define storage for the Pod
+      - name: website-storage       # Volume name referenced above
+
+        persistentVolumeClaim:      # Use storage provided by a PVC
+          claimName: nginx-pvc      # Name of existing PVC
