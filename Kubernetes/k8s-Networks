@@ -1,0 +1,201 @@
+Kubernetes Networking
+
+Kubernetes networking is the system that allows Pods, Services, and external users to communicate with each other.
+One of the biggest design goals of Kubernetes is:
+Every application should be able to communicate without worrying about where it is running.
+
+Whether a Pod is running on Node 1 or Node 10, communication should work seamlessly.
+==============================================================================================================================
+Pod Networking
+
+A Pod is the smallest deployable unit in Kubernetes.
+Every Pod receives its own unique IP address.
+Unlike Docker containers running on the same host, Kubernetes treats each Pod as if it were a separate machine on the network.
+
+This means:
+
+Pod A can directly communicate with Pod B.
+No NAT is required between Pods.
+Pods can communicate across different nodes.
+
+This is one of the core networking principles of Kubernetes.
+
+Why Pod IPs Are Not Enough
+
+Pods are temporary.
+
+When a Pod crashes, gets deleted, or is recreated during an update, Kubernetes creates a new Pod.
+The new Pod usually receives a different IP address.
+Applications cannot depend on Pod IPs because they are not permanent.
+
+This creates a problem:
+
+How can applications reliably find each other if IPs keep changing?
+
+The solution is Services.
+=======================================================================================================
+Service
+
+A Service is a stable network endpoint that sits in front of one or more Pods.
+Applications communicate with the Service rather than directly with Pods.
+The Service remains constant even if Pods are recreated.
+
+You can think of a Service as a permanent reception desk.
+Employees may come and go, but the reception desk always exists.
+
+The Service automatically forwards traffic to healthy Pods.
+-------------------------------------------------------------------------------------------------------------
+
+Service Discovery
+
+In traditional environments, applications often need to know exact server IP addresses.
+In Kubernetes, applications discover each other using Services.
+-----------------------------------------------------------------------------------------------------------
+ClusterIP Service
+
+ClusterIP is the default Service type.
+It exposes an application only inside the Kubernetes cluster.
+External users cannot access it directly.
+Most internal components use ClusterIP services.
+
+Examples include:
+
+Frontend communicating with backend
+Backend communicating with database
+Applications communicating with Redis
+Microservices communicating with each other
+
+ClusterIP is therefore the most commonly used Service type in Kubernetes.
+---------------------------------------------------------------------------------------------------------
+NodePort Service
+
+NodePort allows external users to access an application.
+Kubernetes opens a port on every node.
+Traffic arriving on that port is forwarded to the appropriate Service and Pods.
+
+NodePort is useful for:
+
+Learning Kubernetes
+Testing applications
+Small lab environments
+
+However, it becomes difficult to manage many applications because every application requires a different port.
+Load Balancing Inside Kubernetes
+A Service does more than provide a stable IP.
+It also distributes traffic among multiple Pods.
+
+Suppose an application has three replicas.
+
+When requests arrive at the Service, Kubernetes automatically distributes traffic across all available Pods.
+
+This provides:
+
+Better performance
+Higher availability
+Fault tolerance
+
+If one Pod fails, traffic is sent to the remaining healthy Pods.
+==========================================================================================================
+DNS in Kubernetes
+
+Imagine an application needing to connect to a database.
+Remembering IP addresses would be difficult and unreliable.
+
+Kubernetes solves this using DNS.
+
+Every Service automatically receives a DNS name.
+Applications can communicate using names instead of IP addresses.
+This means developers do not need to know where an application is running.
+They only need to know the Service name.
+DNS is therefore one of the most important features in Kubernetes networking.
+------------------------------------------------------------------------------------------------------------------
+CoreDNS
+
+CoreDNS is the DNS server used by Kubernetes.
+Whenever an application tries to access a Service name, CoreDNS converts that name into the correct Service IP address.
+CoreDNS acts like a phone directory for the cluster.
+Without CoreDNS, applications would need to know actual IP addresses.
+========================================================================================================================
+Network Policies
+
+By default, Kubernetes networking is very open.
+Any Pod can communicate with any other Pod.
+In production environments this is often too permissive.
+Network Policies allow administrators to control which Pods can communicate with each other.
+
+They function similarly to firewall rules.
+
+For example:
+
+Allow frontend Pods to talk to backend Pods.
+Allow backend Pods to talk to database Pods.
+Prevent frontend Pods from directly accessing databases.
+
+Network Policies improve security and reduce the attack surface.
+==================================================================================================================
+Ingress
+
+As organizations deploy more applications, exposing each application separately becomes difficult.
+
+Imagine having:
+
+Jenkins
+Grafana
+SonarQube
+ArgoCD
+
+If each application requires a separate NodePort or LoadBalancer, management becomes complicated and expensive.
+
+Ingress solves this problem.
+
+Ingress provides a single entry point into the cluster.
+Instead of exposing every application separately, external traffic enters through one place and is then routed to the correct application.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Ingress Routing
+
+Ingress makes routing decisions based on:
+
+Hostnames
+
+Examples:
+
+jenkins.company.com
+grafana.company.com
+sonarqube.company.com
+
+or
+
+URL Paths
+
+Examples:
+
+company.com/jenkins
+company.com/grafana
+company.com/sonarqube
+
+This allows many applications to share the same IP address and standard web ports.
+--------------------------------------------------------------------------------------------------------------------------
+Ingress Controller
+
+Ingress itself is only a set of routing rules.
+It does not process traffic.
+
+An Ingress Controller is responsible for reading those rules and performing the actual routing.
+Without an Ingress Controller, Ingress resources do nothing.
+
+Popular controllers include:
+
+NGINX Ingress Controller
+Traefik
+HAProxy Ingress
+
+The controller is the actual component handling incoming requests.
+=====================================================================================================================================
+Real Production Flow
+
+In most companies, traffic flows like this:
+
+User sends request → Ingress Controller receives request → Ingress rules determine destination → Service receives request → Service forwards request → Pod processes request
+Instead of remembering an IP address, an application only needs to know the Service name.
+
+This makes applications more portable and resilient.
