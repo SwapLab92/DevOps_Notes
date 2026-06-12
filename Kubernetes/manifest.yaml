@@ -421,5 +421,49 @@ spec:
 Verify Ingress Controller
 sudo kubectl get svc -n ingress-nginx
 ============================================================================================================
+************************Network Policy Demo***********************************************
+1) create a pod using the below yaml file
 
+apiVersion: v1
+kind: Pod
 
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+2) expose pod to clusterIP
+kubectl expose pod nginx --port=80
+
+3) Create client pod for demo 
+kubectl run client --image=busybox -- sleep 3600
+
+4) Execute inside client pod and check 
+wget -O- http://nginx
+you will see nginx html page code
+
+5) create network ploicy networkpolicy.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: deny-nginx
+
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+
+  policyTypes:
+  - Ingress
+
+6) Run the networkploicy.yaml
+   #kubectl apply -f networkpolicy.yaml
+
+7) Test the application 
