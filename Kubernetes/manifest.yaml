@@ -199,7 +199,7 @@ metadata:
 
 spec:
   storageClassName: ""        # Disable dynamic provisioning
-  volumeClaim: nginx-pv
+  volumeName: nginx-pv
 
   accessModes:
   - ReadWriteOnce                 # Must match PV access mode
