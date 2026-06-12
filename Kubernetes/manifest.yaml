@@ -250,3 +250,176 @@ spec:
 
         persistentVolumeClaim:      # Use storage provided by a PVC
           claimName: nginx-pvc      # Name of existing PVC
+===========================================================================================================================
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+-------------------------------------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>jenkins.yaml Deployment<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+apiVersion: apps/v1               # Deployment API version
+
+kind: Deployment                  # Create a Deployment resource
+
+metadata:
+
+  name: jenkins                   # Deployment name
+
+spec:
+
+  replicas: 1                     # Number of Pod replicas to run
+
+  selector:                       # Used by Deployment to identify its Pods
+
+    matchLabels:
+
+      app: jenkins                # Look for Pods having label app=jenkins
+
+  template:                       # Blueprint for creating Pods
+
+    metadata:
+
+      labels:
+
+        app: jenkins              # Label assigned to Pods
+
+    spec:
+
+      containers:                 # List of containers inside the Pod
+
+      - name: web                 # Container name
+
+        image: nginx              # Use official nginx image
+
+        command:                  # Override default nginx startup command
+
+        - /bin/sh                 # Launch shell
+
+        - -c                      # Execute the following command string
+
+        - |
+
+          echo "<h1>Welcome to Jenkins</h1>" > /usr/share/nginx/html/index.html
+                                  # Create custom web page
+
+          nginx -g 'daemon off;'
+                                  # Start nginx in foreground
+                                  # Container exits if main process stops
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> grafana yaml Deployment <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: apps/v1               # Deployment API version
+
+kind: Deployment                  # Create a Deployment resource
+
+metadata:
+
+  name: grafana                   # Deployment name
+
+spec:
+
+  replicas: 1                     # Run one Pod
+
+  selector:                       # Deployment uses labels to manage Pods
+
+    matchLabels:
+
+      app: grafana                # Select Pods with app=grafana
+
+  template:                       # Pod template
+
+    metadata:
+
+      labels:
+
+        app: grafana              # Label assigned to created Pods
+
+    spec:
+
+      containers:                 # Container definition
+
+      - name: web                 # Container name
+
+        image: nginx              # Use nginx image
+
+        command:                  # Override nginx default startup
+
+        - /bin/sh                 # Start shell
+
+        - -c                      # Execute command string
+
+        - |
+
+          echo "<h1>Welcome to Grafana</h1>" > /usr/share/nginx/html/index.html
+                                  # Create custom web page
+
+          nginx -g 'daemon off;'
+                                  # Run nginx in foreground
+                                  # Keeps container alive
+
+---------------------------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ingress.yaml Deployment <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+apiVersion: networking.k8s.io/v1      # API version used for Ingress resources
+
+kind: Ingress                         # Create an Ingress object
+
+metadata:
+
+  name: devops-ingress                # Name of the Ingress resource
+
+  annotations:
+
+    nginx.ingress.kubernetes.io/rewrite-target: /
+                                       # When user accesses /jenkins or /grafana,
+                                       # rewrite the URL to "/" before sending
+                                       # it to the backend application.
+                                       # Prevents 404 errors from nginx.
+
+spec:
+
+  ingressClassName: nginx             # Use NGINX Ingress Controller
+                                      # to process this Ingress resource
+
+  rules:                              # Traffic routing rules start here
+
+  - http:                             # HTTP-based routing
+
+      paths:                          # List of URL paths to match
+
+      - path: /jenkins                # If request URL contains /jenkins
+
+        pathType: Prefix              # Match anything starting with /jenkins
+                                      # Example:
+                                      # /jenkins
+                                      # /jenkins/login
+                                      # /jenkins/admin
+
+        backend:                      # Destination service details
+
+          service:
+
+            name: jenkins            # Forward traffic to jenkins service
+
+            port:
+
+              number: 80             # Service listens on port 80
+
+      - path: /grafana               # If request URL contains /grafana
+
+        pathType: Prefix             # Match all URLs beginning with /grafana
+
+        backend:                     # Destination service details
+
+          service:
+
+            name: grafana            # Forward traffic to grafana service
+
+            port:
+
+              number: 80             # Service listens on port 80
+**************************************************************************************************
+Verify Ingress Controller
+sudo kubectl get svc -n ingress-nginx
+============================================================================================================
+
+
