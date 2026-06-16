@@ -1,3 +1,214 @@
+Playbook 1: Ping All Servers
+===================================================================================
+---
+- name: Test Connectivity
+  hosts: all
+
+  tasks:
+
+  - name: Ping Servers
+    ping:
+
+Purpose: Verify connectivity to all managed nodes.
+===========================================================================================
+Playbook 2: Gather Facts
+---
+- name: Gather System Information
+  hosts: all
+
+  tasks:
+
+  - name: Collect Facts
+    setup:
+
+Purpose: Collect system information from managed hosts.
+============================================================================================
+Playbook 3: Run a Command
+---
+- name: Check Uptime
+  hosts: all
+
+  tasks:
+
+  - name: Display Uptime
+    command: uptime
+
+Purpose: Execute a simple command on all hosts.
+==========================================================================================================
+Playbook 4: Create a Directory
+---
+- name: Create Directory
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Create Demo Directory
+    file:
+      path: /demo
+      state: directory
+
+Purpose: Create directories remotely.
+===========================================================================================================
+Playbook 5: Create a File
+---
+- name: Create File
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Create Empty File
+    file:
+      path: /tmp/demo.txt
+      state: touch
+
+Purpose: Create files remotely.
+================================================================================================================
+Playbook 6: Copy a File
+
+Create a file on control node:
+
+welcome.txt
+
+Playbook:
+
+---
+- name: Copy File
+  hosts: all
+
+  tasks:
+
+  - name: Copy Welcome File
+    copy:
+      src: welcome.txt
+      dest: /tmp/welcome.txt
+
+Purpose: Copy files from control node to managed nodes.
+====================================================================================================
+Playbook 7: Install Nginx
+---
+- name: Install Nginx
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Install Package
+    yum:
+      name: nginx
+      state: present
+
+Purpose: Install software packages.
+=========================================================================================================
+Playbook 8: Start Service
+---
+- name: Start Nginx
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Start Nginx Service
+    service:
+      name: nginx
+      state: started
+
+Purpose: Manage services.
+=======================================================================================================
+Playbook 9: Create User
+---
+- name: Create User
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Create DevOps User
+    user:
+      name: devops
+      state: present
+
+Purpose: User management.
+=====================================================================================================
+Playbook 10: Install and Start Nginx
+---
+- name: Install and Start Nginx
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Install Nginx
+    yum:
+      name: nginx
+      state: present
+
+  - name: Start Nginx
+    service:
+      name: nginx
+      state: started
+
+Purpose: Demonstrate multiple tasks in one playbook.
+===========================================================================================================
+Playbook 11: Install Multiple Packages
+---
+- name: Install Packages
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Install Required Packages
+    yum:
+      name:
+        - git
+        - wget
+        - tree
+      state: present
+
+Purpose: Show package list installation.
+===========================================================================================================
+Playbook 12: Remove a Package
+---
+- name: Remove Package
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Remove Telnet
+    yum:
+      name: telnet
+      state: absent
+
+Purpose: Software removal.
+===================================================================================================================
+Playbook 13: Reboot Servers
+---
+- name: Reboot Servers
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Reboot System
+    reboot:
+
+Purpose: System maintenance.
+======================================================================================================================
+Playbook 14: Display Message
+---
+- name: Print Message
+  hosts: all
+
+  tasks:
+
+  - name: Show Output
+    debug:
+      msg: "Welcome to Ansible Training"
+
+
 When Condition
 ===========================================================
 ---
