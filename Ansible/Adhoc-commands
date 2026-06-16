@@ -1,0 +1,49 @@
+# Connectivity & Facts
+ansible all -m ping
+ansible all -m setup
+
+# System Information
+ansible all -m command -a "hostname"
+ansible all -m command -a "uptime"
+ansible all -m command -a "date"
+ansible all -m command -a "uname -r"
+
+# Resource Monitoring
+ansible all -m shell -a "df -h"
+ansible all -m shell -a "free -m"
+ansible all -m shell -a "ps -ef | grep nginx"
+ansible all -m shell -a "ss -tulpn"
+
+# Package Management
+ansible all -b -m yum -a "name=httpd state=present"
+ansible all -b -m yum -a "name=httpd state=absent"
+ansible all -b -m yum -a "name=httpd state=latest"
+
+# Service Management
+ansible all -b -m service -a "name=httpd state=started"
+ansible all -b -m service -a "name=httpd state=stopped"
+ansible all -b -m service -a "name=httpd state=restarted"
+ansible all -b -m service -a "name=httpd enabled=yes"
+ansible all -m shell -a "systemctl status httpd"
+
+# User & Group Management
+ansible all -b -m user -a "name=devops"
+ansible all -b -m user -a "name=devops state=absent"
+ansible all -b -m group -a "name=developers"
+
+# File & Directory Management
+ansible all -b -m file -a "path=/demo state=directory"
+ansible all -b -m file -a "path=/demo state=absent"
+ansible all -b -m file -a "path=/tmp/demo.txt state=touch"
+ansible all -m copy -a "src=test.txt dest=/tmp/test.txt"
+ansible all -m fetch -a "src=/etc/hosts dest=/tmp/"
+ansible all -b -m file -a "path=/tmp/test.txt mode=0644"
+
+# Command Execution
+ansible all -m shell -a "echo Hello World"
+
+# System Administration
+ansible all -b -m reboot
+
+# Inventory Group Example
+ansible webservers -m ping
