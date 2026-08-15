@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Deploy welcome message
+      template:
+        src: welcome.j2
+        dest: /tmp/welcome.txt

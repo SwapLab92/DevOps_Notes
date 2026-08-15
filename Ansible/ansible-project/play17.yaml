@@ -1,0 +1,32 @@
+---
+- name: create user and add to group
+  hosts: all
+  become: yes
+
+  vars:
+    employees:
+      - name: rahul
+        group: group-rahul
+    
+      - name: amit
+        group: group-amit
+ 
+      - name: rohit
+        group: group-rohit 
+
+  tasks: 
+  - name: create a group
+    group:
+      name: "{{ item.group }}"
+      state: present
+    loop: "{{ employees }}"
+
+  - name: create user and and to group
+    user:
+      name: "{{ item.name }}"
+      groups: "{{ item.group }}"
+      append: yes
+      state: present
+    loop: "{{ employees }}"
+     
+  

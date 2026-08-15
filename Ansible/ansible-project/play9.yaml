@@ -1,0 +1,13 @@
+---
+- name: Install Package
+  hosts: all
+  become: yes
+  
+  vars:
+    package_name: git
+
+  tasks:
+  - name: Install git package using variables
+    yum:
+      name: "{{package_name}}"
+      state: present 

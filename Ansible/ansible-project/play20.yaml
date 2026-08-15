@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Remove invalid listen directive
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^listen 8081;'
+        state: absent

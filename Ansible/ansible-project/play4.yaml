@@ -1,0 +1,12 @@
+---
+- name: Create Directory
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: create demo directory
+    file: 
+      path: /demo
+      state: directory
+
+ 

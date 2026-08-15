@@ -1,0 +1,20 @@
+---
+- name: Handlers examples
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Change worker_processes value
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^worker_processes 2;'
+        line: 'worker_processes auto;'
+      notify: Restart nginx
+
+  handlers:
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

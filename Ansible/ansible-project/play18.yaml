@@ -1,0 +1,11 @@
+---
+- name: Edit files playbook
+  hosts: all
+  become: yes
+  
+  tasks:
+  - name: change ansible to ansible-new in welcome.txt file
+    lineinfile:
+      path: /demo/welcome.txt
+      regexp: '^welcome to ansible demo$'
+      line: 'welcome to ansible-new demo'

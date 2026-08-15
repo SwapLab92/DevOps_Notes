@@ -1,0 +1,12 @@
+---
+- name: Copy File
+  hosts: all
+  become: yes
+  
+  tasks:
+  - name: copy welcome file
+    copy:
+      src: welcome.txt
+      dest: /demo/welcome.txt
+
+

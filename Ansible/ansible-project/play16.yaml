@@ -1,0 +1,17 @@
+---
+- name: create multiple files using loop
+  hosts: all
+  become: yes
+  
+  vars:
+    files:
+      - /tmp/app1.log
+      - /tmp/app2.log
+      - /tmp/app3.log
+
+  tasks:
+  - name: loop on files
+    file:
+      path: "{{ item }}"
+      state: touch
+    loop: "{{ files }}"

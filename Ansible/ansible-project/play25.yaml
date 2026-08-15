@@ -1,0 +1,10 @@
+---
+- name: Welcome to jinja 2 templates playbook
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Deploy a welcome message from jinja2
+    template:
+      src: conf.j2
+      dest: /tmp/conf.txt

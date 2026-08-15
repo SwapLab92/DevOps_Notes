@@ -1,0 +1,13 @@
+---
+- name: User Creation
+  hosts: all
+  become: yes
+  
+  vars:
+    username: developer
+   
+  tasks:
+  - name: create user using variables
+    user:
+      name: "{{ username }}"
+      state: present

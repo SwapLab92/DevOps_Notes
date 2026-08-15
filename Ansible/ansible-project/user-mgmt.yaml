@@ -1,0 +1,10 @@
+---
+- name: playbook to run user management role
+  hosts: all
+  become: yes
+  
+  vars:
+    username: student
+
+  roles:
+    - user_mgmt

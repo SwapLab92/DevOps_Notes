@@ -1,0 +1,23 @@
+---
+- name: create a group
+  group:
+    name: IT-Accurate
+    state: present
+
+- name: create users
+  user:
+    name: "{{ username }}"
+    group: IT-Accurate
+    state: present
+
+- name: create welcome file
+  template:
+    src: welcome.j2
+    dest: "/home/{{ username }}/welcome.txt"
+    owner: "{{ username }}"
+    group: IT-Accurate
+
+
+
+
+# tasks file for user_mgmt

@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Deploy welcome banner
+      template:
+        src: templates/motd.j2
+        dest: /tmp/motd

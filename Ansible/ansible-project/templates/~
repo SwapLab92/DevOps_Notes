@@ -1,0 +1,9 @@
+APP_NAME=myapp
+
+SERVER={{ inventory_hostname }}
+
+PORT={{ app_port }}
+
+ENV={{ env_type }}
+
+LOG_PATH=/var/log/myapp.log

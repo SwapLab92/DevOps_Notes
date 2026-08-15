@@ -1,0 +1,16 @@
+---
+- name: Change nginx config
+  hosts: all
+  become: yes
+  
+  tasks:
+  - name: change nginx port
+    lineinfile:
+      path: /etc/nginx/nginx.conf
+      regexp: '^worker_processes auto;'
+      line: 'worker_processes 2;'
+  
+  - name: Restart nginx
+    service:
+      name: nginx
+      state: restarted

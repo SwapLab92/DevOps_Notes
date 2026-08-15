@@ -1,0 +1,23 @@
+---
+- name: create user and add to group
+  hosts: all
+  become: yes
+
+  vars:
+    username: test-user
+    groupname: test-group
+
+  tasks: 
+  - name: create a group
+    group:
+      name: "{{ groupname }}"
+      state: present
+
+  - name: create user and and to group
+    user:
+      name: "{{ username }}"
+      groups: "{{ groupname }}"
+      append: yes
+      state: present 
+     
+  

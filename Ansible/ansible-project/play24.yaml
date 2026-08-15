@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Generate application config
+      template:
+        src: templates/app.conf.j2
+        dest: /tmp/app.conf
